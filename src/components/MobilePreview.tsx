@@ -69,10 +69,15 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
   const [activePointerIndex, setActivePointerIndex] = useState(0);
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState<number | null>(null);
 
+  // Allow the user to completely dismiss the promo popup during their session to avoid any clicking/tapping obstruction
+  const [isDismissed, setIsDismissed] = useState(false);
+
   // Looping promo popup states (10s initial wait, 5s visible, slide out, 5s repeat delay)
   const [popupState, setPopupState] = useState<'initial' | 'visible' | 'outro' | 'repeat_wait'>('initial');
 
   React.useEffect(() => {
+    if (isDismissed) return;
+
     let timer: any;
 
     if (popupState === 'initial') {
@@ -94,7 +99,7 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
     }
 
     return () => clearTimeout(timer);
-  }, [popupState]);
+  }, [popupState, isDismissed]);
 
   const slideshowImages = [
     "https://i.imgur.com/GxDDVkK.png",
@@ -503,7 +508,7 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
 
       {/* Floating Animated Border-to-Border Promo Popup */}
       <AnimatePresence>
-        {popupState === 'visible' && (
+        {popupState === 'visible' && !isDismissed && (
           <motion.div
             initial={{ x: '-100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -511,20 +516,22 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
             transition={{ type: 'spring', damping: 20, stiffness: 80 }}
             className="fixed bottom-0 left-0 right-0 w-full z-50 p-0 flex justify-center items-end pointer-events-none md:hidden"
           >
-            <img
-              src="https://i.imgur.com/FidvecZ.png"
-              alt="Promo Popup Mascot"
-              className="w-full h-auto object-contain border-0 drop-shadow-[0_4px_25px_rgba(0,0,0,0.65)] pointer-events-auto cursor-pointer"
-              referrerPolicy="no-referrer"
-              onClick={() => {
-                const firstLink = config.links.find(l => l.enabled);
-                if (firstLink) {
-                  handleLinkClick(firstLink.id, firstLink.url);
-                } else {
-                  window.open('https://www.facebook.com/lancezymata', '_blank', 'noopener,noreferrer');
-                }
-              }}
-            />
+            <div className="pointer-events-none select-none max-w-sm xs:max-w-md w-full flex justify-center items-end border-0">
+              <img
+                src="https://i.imgur.com/FidvecZ.png"
+                alt="Promo Popup Mascot"
+                className="w-full h-auto object-contain border-0 drop-shadow-[0_8px_30px_rgba(0,0,0,0.85)] hover:scale-102 transition-transform duration-300 pointer-events-auto cursor-pointer"
+                referrerPolicy="no-referrer"
+                onClick={() => {
+                  const firstLink = config.links.find(l => l.enabled);
+                  if (firstLink) {
+                    handleLinkClick(firstLink.id, firstLink.url);
+                  } else {
+                    window.open('https://www.facebook.com/lancezymata', '_blank', 'noopener,noreferrer');
+                  }
+                }}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
