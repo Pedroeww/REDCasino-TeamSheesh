@@ -1,5 +1,5 @@
 {
-  "name": "REDCasino - TeamSheesh",
+  "name": "TeamSheesh Landing Bio Links",
   "description": "A premium, high-conversion mobile-first landing and bio links page for TeamSheesh Agents, complete with an interactive live link editor, QR code generator, and click analytics.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

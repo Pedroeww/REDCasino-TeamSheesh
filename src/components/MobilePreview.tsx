@@ -16,6 +16,7 @@ import {
   QrCode
 } from 'lucide-react';
 import { BioConfig, BioTheme } from '../types';
+import { motion, AnimatePresence } from 'motion/react';
 
 // Robust asset resolver helper to translate hardcoded source paths to their web-safe high-res CDNs
 const resolveAssetPath = (pathString: string): string => {
@@ -67,6 +68,33 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activePointerIndex, setActivePointerIndex] = useState(0);
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState<number | null>(null);
+
+  // Looping promo popup states (10s initial wait, 5s visible, slide out, 5s repeat delay)
+  const [popupState, setPopupState] = useState<'initial' | 'visible' | 'outro' | 'repeat_wait'>('initial');
+
+  React.useEffect(() => {
+    let timer: any;
+
+    if (popupState === 'initial') {
+      timer = setTimeout(() => {
+        setPopupState('visible');
+      }, 10000); // 10s initial wait before showing up
+    } else if (popupState === 'visible') {
+      timer = setTimeout(() => {
+        setPopupState('outro');
+      }, 5000); // stays active for 5s
+    } else if (popupState === 'outro') {
+      timer = setTimeout(() => {
+        setPopupState('repeat_wait');
+      }, 800); // transition duration
+    } else if (popupState === 'repeat_wait') {
+      timer = setTimeout(() => {
+        setPopupState('visible');
+      }, 5000); // wait 5s before repeating cycle
+    }
+
+    return () => clearTimeout(timer);
+  }, [popupState]);
 
   const slideshowImages = [
     "https://i.imgur.com/GxDDVkK.png",
@@ -472,6 +500,34 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
 
         </div>
       </div>
+
+      {/* Floating Animated Border-to-Border Promo Popup */}
+      <AnimatePresence>
+        {popupState === 'visible' && (
+          <motion.div
+            initial={{ x: '-100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '-100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 80 }}
+            className="fixed bottom-0 left-0 right-0 w-full z-50 p-0 flex justify-center items-end pointer-events-none md:hidden"
+          >
+            <img
+              src="https://i.imgur.com/FidvecZ.png"
+              alt="Promo Popup Mascot"
+              className="w-full h-auto object-contain border-0 drop-shadow-[0_4px_25px_rgba(0,0,0,0.65)] pointer-events-auto cursor-pointer"
+              referrerPolicy="no-referrer"
+              onClick={() => {
+                const firstLink = config.links.find(l => l.enabled);
+                if (firstLink) {
+                  handleLinkClick(firstLink.id, firstLink.url);
+                } else {
+                  window.open('https://www.facebook.com/lancezymata', '_blank', 'noopener,noreferrer');
+                }
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
