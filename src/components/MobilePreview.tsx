@@ -252,13 +252,13 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
       {/* Main Container - Scrollable inside phone, or standard page */}
       <div 
         className={`relative z-10 flex flex-col h-full overflow-y-auto ${
-          previewOnly ? 'max-h-[760px] px-5 pt-12 pb-8' : 'min-h-screen'
+          previewOnly ? 'max-h-[760px] px-5 pt-12 pb-44' : 'min-h-screen'
         }`}
         style={{
           background: 'transparent'
         }}
       >
-        <div className={`w-full flex-grow flex flex-col justify-between ${previewOnly ? 'h-full' : 'max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-5 pt-12 pb-8'}`}>
+        <div className={`w-full flex-grow flex flex-col justify-between ${previewOnly ? 'h-full' : 'max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-5 pt-12 pb-44'}`}>
         
         {/* HEADER SECTION */}
         <header className="flex flex-col items-center text-center mt-4">
@@ -514,7 +514,8 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '-100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 20, stiffness: 80 }}
-            className="fixed bottom-0 left-0 right-0 w-full z-50 p-0 flex justify-center items-end pointer-events-none md:hidden"
+            className="absolute bottom-0 left-0 right-0 w-full z-50 p-0 flex justify-center items-end pointer-events-none md:hidden"
+            style={{ willChange: 'transform' }}
           >
             <div className="pointer-events-none select-none max-w-sm xs:max-w-md w-full flex justify-center items-end border-0">
               <img
