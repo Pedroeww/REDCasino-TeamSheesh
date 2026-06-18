@@ -15,6 +15,26 @@ export default function App() {
     // Always sync critical defaults like the official brand name and logo URLs
     parsedConfig.profileName = INITIAL_BIO_CONFIG.profileName;
     parsedConfig.customAvatarUrl = INITIAL_BIO_CONFIG.customAvatarUrl;
+
+    // Ensure the new Telegram group link is present in the links list to sync existing sessions
+    if (parsedConfig.links && Array.isArray(parsedConfig.links)) {
+      const hasTelegramLink = parsedConfig.links.some((l: any) => l.url === 'https://t.me/teamsheesh' || l.id === 'link-telegram-group');
+      if (!hasTelegramLink) {
+        const telegramLink = INITIAL_BIO_CONFIG.links.find(l => l.id === 'link-telegram-group');
+        if (telegramLink) {
+          const officialPageIndex = parsedConfig.links.findIndex((l: any) => l.id === 'link-official-page');
+          const updatedLinks = [...parsedConfig.links];
+          if (officialPageIndex !== -1) {
+            updatedLinks.splice(officialPageIndex + 1, 0, telegramLink);
+          } else {
+            updatedLinks.push(telegramLink);
+          }
+          parsedConfig.links = updatedLinks;
+          // Persist the synced links list
+          localStorage.setItem('team_whiskey_bio_config', JSON.stringify(parsedConfig));
+        }
+      }
+    }
     
     const params = new URLSearchParams(window.location.search);
     const refParam = params.get('ref');

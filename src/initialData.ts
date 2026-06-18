@@ -99,6 +99,16 @@ export const INITIAL_BIO_CONFIG: BioConfig = {
       enabled: true,
     },
     {
+      id: 'link-telegram-group',
+      title: 'Join our Official telegram group',
+      url: 'https://t.me/teamsheesh',
+      iconName: 'Send',
+      badgeText: '✈️ OFFICIAL GROUP',
+      badgeColor: 'blue',
+      clicks: 3521,
+      enabled: true,
+    },
+    {
       id: 'link-live-support',
       title: 'Chat with live admins',
       url: 'https://www.facebook.com/zryll.esquivel',
