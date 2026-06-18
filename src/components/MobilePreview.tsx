@@ -16,7 +16,7 @@ import {
   QrCode
 } from 'lucide-react';
 import { BioConfig, BioTheme } from '../types';
-import { motion, AnimatePresence } from 'motion/react';
+import MobilePoppingImage from './MobilePoppingImage';
 
 // Robust asset resolver helper to translate hardcoded source paths to their web-safe high-res CDNs
 const resolveAssetPath = (pathString: string): string => {
@@ -68,38 +68,6 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activePointerIndex, setActivePointerIndex] = useState(0);
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState<number | null>(null);
-
-  // Allow the user to completely dismiss the promo popup during their session to avoid any clicking/tapping obstruction
-  const [isDismissed, setIsDismissed] = useState(false);
-
-  // Looping promo popup states (10s initial wait, 5s visible, slide out, 5s repeat delay)
-  const [popupState, setPopupState] = useState<'initial' | 'visible' | 'outro' | 'repeat_wait'>('initial');
-
-  React.useEffect(() => {
-    if (isDismissed) return;
-
-    let timer: any;
-
-    if (popupState === 'initial') {
-      timer = setTimeout(() => {
-        setPopupState('visible');
-      }, 10000); // 10s initial wait before showing up
-    } else if (popupState === 'visible') {
-      timer = setTimeout(() => {
-        setPopupState('outro');
-      }, 5000); // stays active for 5s
-    } else if (popupState === 'outro') {
-      timer = setTimeout(() => {
-        setPopupState('repeat_wait');
-      }, 800); // transition duration
-    } else if (popupState === 'repeat_wait') {
-      timer = setTimeout(() => {
-        setPopupState('visible');
-      }, 5000); // wait 5s before repeating cycle
-    }
-
-    return () => clearTimeout(timer);
-  }, [popupState, isDismissed]);
 
   const slideshowImages = [
     "https://i.imgur.com/GxDDVkK.png",
@@ -220,6 +188,9 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
       } ${theme.className}`}
       style={{ contentVisibility: 'auto' }}
     >
+      {/* Mobile Popping Image Character widget */}
+      <MobilePoppingImage previewOnly={previewOnly} />
+
       {/* Phone Camera Notch Accessory */}
       {previewOnly && (
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-6 bg-neutral-800 rounded-b-3xl z-40 flex items-center justify-center space-x-1.5">
@@ -252,13 +223,13 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
       {/* Main Container - Scrollable inside phone, or standard page */}
       <div 
         className={`relative z-10 flex flex-col h-full overflow-y-auto ${
-          previewOnly ? 'max-h-[760px] px-5 pt-12 pb-44' : 'min-h-screen'
+          previewOnly ? 'max-h-[760px] px-5 pt-12 pb-8' : 'min-h-screen'
         }`}
         style={{
           background: 'transparent'
         }}
       >
-        <div className={`w-full flex-grow flex flex-col justify-between ${previewOnly ? 'h-full' : 'max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-5 pt-12 pb-44'}`}>
+        <div className={`w-full flex-grow flex flex-col justify-between ${previewOnly ? 'h-full' : 'max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-5 pt-12 pb-8'}`}>
         
         {/* HEADER SECTION */}
         <header className="flex flex-col items-center text-center mt-4">
@@ -505,37 +476,6 @@ export default function MobilePreview({ config, theme, previewOnly = false }: Mo
 
         </div>
       </div>
-
-      {/* Floating Animated Border-to-Border Promo Popup */}
-      <AnimatePresence>
-        {popupState === 'visible' && !isDismissed && (
-          <motion.div
-            initial={{ x: '-100%', opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '-100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 20, stiffness: 80 }}
-            className="absolute bottom-0 left-0 right-0 w-full z-50 p-0 flex justify-center items-end pointer-events-none md:hidden"
-            style={{ willChange: 'transform' }}
-          >
-            <div className="pointer-events-none select-none max-w-sm xs:max-w-md w-full flex justify-center items-end border-0">
-              <img
-                src="https://i.imgur.com/FidvecZ.png"
-                alt="Promo Popup Mascot"
-                className="w-full h-auto object-contain border-0 drop-shadow-[0_8px_30px_rgba(0,0,0,0.85)] hover:scale-102 transition-transform duration-300 pointer-events-auto cursor-pointer"
-                referrerPolicy="no-referrer"
-                onClick={() => {
-                  const firstLink = config.links.find(l => l.enabled);
-                  if (firstLink) {
-                    handleLinkClick(firstLink.id, firstLink.url);
-                  } else {
-                    window.open('https://www.facebook.com/lancezymata', '_blank', 'noopener,noreferrer');
-                  }
-                }}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
