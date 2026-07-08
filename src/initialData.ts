@@ -69,7 +69,7 @@ export const INITIAL_BIO_CONFIG: BioConfig = {
     {
       id: 'link-player-reg',
       title: 'Player Registration',
-      url: 'https://www.facebook.com/zryll.esquivel',
+      url: 'https://m.me/carla.pecjo',
       iconName: 'Sparkles',
       badgeText: '🔥 REGISTRATION LIVE',
       badgeColor: 'red',
@@ -80,7 +80,7 @@ export const INITIAL_BIO_CONFIG: BioConfig = {
     {
       id: 'link-agent-reg',
       title: 'Apply as Agent',
-      url: 'https://www.facebook.com/zryll.esquivel',
+      url: 'https://m.me/carla.pecjo',
       iconName: 'Briefcase',
       badgeText: '💼 EXPAND WITH US',
       badgeColor: 'gold',
@@ -111,7 +111,7 @@ export const INITIAL_BIO_CONFIG: BioConfig = {
     {
       id: 'link-live-support',
       title: 'Chat with live admins',
-      url: 'https://www.facebook.com/zryll.esquivel',
+      url: 'https://m.me/carla.pecjo',
       iconName: 'MessageCircle',
       badgeText: '⚡ ALWAYS ACTIVE',
       badgeColor: 'green',

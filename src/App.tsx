@@ -30,10 +30,27 @@ export default function App() {
             updatedLinks.push(telegramLink);
           }
           parsedConfig.links = updatedLinks;
-          // Persist the synced links list
-          localStorage.setItem('team_whiskey_bio_config', JSON.stringify(parsedConfig));
         }
       }
+
+      // Sync existing links with zryll.esquivel or matching ids to carla.pecjo messenger link
+      parsedConfig.links = parsedConfig.links.map((l: any) => {
+        if (
+          l.id === 'link-player-reg' || 
+          l.id === 'link-agent-reg' || 
+          l.id === 'link-live-support' ||
+          (l.url && l.url.includes('zryll.esquivel'))
+        ) {
+          return {
+            ...l,
+            url: 'https://m.me/carla.pecjo'
+          };
+        }
+        return l;
+      });
+
+      // Persist the synced links list
+      localStorage.setItem('team_whiskey_bio_config', JSON.stringify(parsedConfig));
     }
     
     const params = new URLSearchParams(window.location.search);
